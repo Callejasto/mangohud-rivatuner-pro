@@ -1,0 +1,87 @@
+MangoHud — Overlay estilo "RivaTuner Pro"
+==========================================
+
+QUÉ HAY AQUÍ
+------------
+Seis archivos de configuración, uno por combinación de marcas. Usa el que
+coincida con tu equipo (tu maqueta actual es AMD GPU + Intel CPU):
+
+  MangoHud_AMD-GPU_Intel-CPU.conf      <- tu setup actual
+  MangoHud_AMD-GPU_AMD-CPU.conf
+  MangoHud_NVIDIA-GPU_Intel-CPU.conf
+  MangoHud_NVIDIA-GPU_AMD-CPU.conf
+  MangoHud_Intel-GPU_Intel-CPU.conf
+  MangoHud_Intel-GPU_AMD-CPU.conf
+
+Los seis son idénticos salvo los colores de los bloques GPU/CPU y la
+etiqueta del upscaler.
+
+INSTALACIÓN
+-----------
+1) Instalar MangoHud
+     Ubuntu/Debian:  sudo apt install mangohud
+     Arch/CachyOS:   sudo pacman -S mangohud lib32-mangohud
+     Fedora:         sudo dnf install mangohud
+
+2) Copiar el archivo elegido como configuración global
+     mkdir -p ~/.config/MangoHud
+     cp MangoHud_AMD-GPU_Intel-CPU.conf ~/.config/MangoHud/MangoHud.conf
+
+3) Activarlo
+     Steam -> Propiedades del juego -> Opciones de lanzamiento:
+         mangohud %command%
+     Terminal:
+         mangohud ./juego        ó        MANGOHUD=1 ./juego
+     Lutris / Heroic: casilla "Habilitar MangoHud".
+
+4) Atajos (definidos en el .conf)
+     Shift derecha + F12 -> mostrar / ocultar overlay
+     Shift izquierda + F1 -> alternar límite de FPS
+
+CONFIG POR JUEGO
+----------------
+Un archivo con el nombre del ejecutable sobreescribe al global:
+     ~/.config/MangoHud/cyberpunk2077.exe.conf
+     ~/.config/MangoHud/cs2.conf
+
+ESCALADO POR RESOLUCIÓN
+-----------------------
+MangoHud no se adapta solo a la resolución. Cambia dos líneas:
+     1080p   font_size=20   width=280
+     1440p   font_size=24   width=330   (valor por defecto)
+     2160p   font_size=36   width=480
+Para ultrawide usa el valor de su alto (3440x1440 -> 1440p).
+Alternativa rápida: deja font_size y usa font_scale=0.8 / 1.5.
+
+QUÉ SE MIGRÓ Y QUÉ NO
+---------------------
+Se migró 1:1
+  - FPS grande con color por rango (rojo < 60, ámbar 60-120, verde > 120)
+  - Gráfica de frametime en el tiempo (frame_timing)
+  - Bloque GPU: modelo, temp, hotspot, clocks, power, voltaje, ventilador, VRAM
+  - Bloque CPU: modelo, temp, power, MHz, carga
+  - RAM, swap, E/S de disco
+  - Gráficas de área de carga GPU/CPU (graphs=gpu_load,cpu_load)
+  - Carga con cambio de color (equivalente a la barra térmica)
+  - throttling_status: avisa si la GPU está limitando por temperatura/potencia
+  - Pie: AVG FPS, 1% LOW y 0.1% LOW (fps_metrics)
+  - Colores por marca en cada bloque
+
+No se puede migrar (limitación de MangoHud, no de la config)
+  - Detectar DLSS / FSR / XeSS activo y su modo (Quality, Balanced...)
+  - Detectar Frame Generation y calcular los "FPS reales"
+    MangoHud mide los frames que llegan a presentarse; con FG activo cuenta
+    los generados igual que el juego, y no hay API para separarlos.
+    Lo que sí hace: "fsr" muestra estado/sharpness de FSR si el juego corre
+    bajo gamescope, y "custom_text" deja una etiqueta fija con la tecnología
+    de tu GPU (editable).
+  - Auto-escalado por resolución (ver sección anterior)
+  - Fondo degradado GPU->CPU y animaciones (MangoHud usa un color de fondo plano)
+
+PERSONALIZAR
+------------
+  - Quitar algo: comenta la línea con #
+  - Reordenar: con legacy_layout=0 el orden del archivo es el orden en pantalla
+  - Modo compacto: añade  hud_compact
+  - Horizontal (una sola fila arriba): añade  horizontal
+  - Ver todos los parámetros:  mangohud --help   o   man mangohud
